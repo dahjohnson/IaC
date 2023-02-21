@@ -5,7 +5,7 @@ output "instance_public_ip" {
   value       = aws_instance.jenkins_server.public_ip
 }
 
-output "s3_bucket_url" {
-  description = "URL for S3 bucket"
-  value       = aws_s3_bucket.s3.id
+output "s3_bucket_uri" {
+  description = "S3 bucket URI"
+  value       = "s3://${aws_s3_bucket.s3.id}"
 }

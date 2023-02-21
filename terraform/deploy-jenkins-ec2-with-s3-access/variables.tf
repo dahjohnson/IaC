@@ -1,3 +1,4 @@
+# VPC Variables
 
 variable "vpc_cidr" {
   description = "VPC cidr block"
@@ -28,6 +29,95 @@ variable "internet_gateway_tag" {
   type        = string
   default     = "Demo-Internet-Gateway" 
 }
+
+# IAM Role Variables
+
+variable "ec2_role_name" {
+  description = "IAM role name for Jenkins EC2"
+  type        = string
+  default     = "Jenksins_EC2_Server_IAM_Role" 
+}
+
+variable "ec2_instance_profile_name" {
+  description = "IAM instance profile name for Jenkins EC2"
+  type        = string
+  default     = "Jenkins_EC2_Server_Instance_Profile"
+}
+
+variable "ec2_role_policy_name" {
+  description = "IAM role policy name for Jenkins EC2"
+  type        = string
+  default     = "Jenkins_EC2_Role_Policy"
+}
+
+variable "ec2-trust-policy" {
+  description = "sts assume role policy for EC2"
+  type        = string
+  default     = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sts:AssumeRole"
+            ],
+            "Principal": {
+                "Service": [
+                    "ec2.amazonaws.com"
+                ]
+            }
+        }   
+    ]
+}
+    EOF  
+}
+
+variable "ec2-s3-permissions" {
+  description = "IAM permissions for EC2 to S3"
+  type        = string
+  default     = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+  EOF
+}
+
+# S3 Variables
+
+variable "bucket_name" {
+  description = "S3 bucket name"
+  type        = string
+  default     = "terraform1demo1s3bucket2023"
+}
+
+# Security Group Variables
+
+variable "security_group_name" {
+  description = "Name for Jenkins Security Group"
+  type        = string
+  default     = "Jenkins Security Group"
+}
+
+## External Data Source Block to Obtain User's Public IP and add to Security Group
+
+data "external" "myipaddr" {
+  program = ["bash", "-c", "curl -s 'https://ipinfo.io/json'"]
+}
+
+# EC2 Variables
 
 variable "ami" {
   description = "Jenkins EC2 machine image id"
@@ -88,55 +178,3 @@ variable "ec2_tag" {
   type        = string
   default     = "Jenkins-Server" 
 }
-
-variable "ec2-trust-policy" {
-  description = "sts assume role policy for EC2"
-  type        = string
-  default     = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "sts:AssumeRole"
-            ],
-            "Principal": {
-                "Service": [
-                    "ec2.amazonaws.com"
-                ]
-            }
-        }   
-    ]
-}
-    EOF  
-}
-
-variable "ec2-s3-permissions" {
-  description = "IAM permissions for EC2 to S3"
-  type        = string
-  default     = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:ListBucket",
-                "s3:GetObject",
-                "s3:PutObject",
-                "s3:DeleteObject"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-  EOF
-}
-
-variable "bucket_name" {
-  description = "Name for S3 bucket"
-  type        = string
-  default     = "terraform1demo1s3bucket2023"
-}
-

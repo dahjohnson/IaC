@@ -1,5 +1,8 @@
+# This Terraform deployment creates the following resources:
+#   VPC, Subnet, Internet Gateway, Default Route, IAM instance profile with S3 access,
+#   Security Group, and EC2 with userdata script installing Jenkins
 
-# Create VPC Resources
+## Create VPC Resources
 
 resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
@@ -39,20 +42,20 @@ resource "aws_default_route_table" "default_route" {
   }
 }
 
-# Create S3 Bucket and Policies
+## Create S3 Bucket and Policies
 
 resource "aws_iam_role" "ec2_iam_role" {
-    name = "Jenksins_EC2_Server_IAM_Role"
+    name = var.ec2_role_name
     assume_role_policy = var.ec2-trust-policy
 }
 
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
-    name = "Jenkins_EC2_Server_Instance_Profile"
+    name = var.ec2_instance_profile_name
     role = aws_iam_role.ec2_iam_role.id
 }
 
 resource "aws_iam_role_policy" "ec2_role_policy" {
-    name = "Jenkins_EC2_Role_Policy"
+    name = var.ec2_role_policy_name
     role = "${aws_iam_role.ec2_iam_role.id}"
     policy = var.ec2-s3-permissions
 }
@@ -66,14 +69,10 @@ resource "aws_s3_bucket" "s3" {
     }
 }
 
-# Create EC2 Security Group and Security Rules
-
-data "external" "myipaddr" {
-  program = ["bash", "-c", "curl -s 'https://ipinfo.io/json'"]
-}
+## Create EC2 Security Group and Security Rules
 
 resource "aws_security_group" "jenkins_security_group" {
-  name        = "Jenkins Security Group"
+  name        = var.security_group_name
   description = "Apply to Jenkins EC2 instance"
   vpc_id      = aws_vpc.vpc.id
 
@@ -106,7 +105,7 @@ resource "aws_security_group" "jenkins_security_group" {
   }
 }
 
-# Create EC2 Instance
+## Create EC2 Instance
 
 resource "aws_instance" "jenkins_server" {
     ami                  = var.ami
@@ -121,4 +120,3 @@ resource "aws_instance" "jenkins_server" {
         Name = var.ec2_tag
     }
 }
-
