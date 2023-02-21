@@ -92,7 +92,7 @@ variable "ec2-s3-permissions" {
         }
     ]
 }
-  EOF
+EOF
 }
 
 # S3 Variables
