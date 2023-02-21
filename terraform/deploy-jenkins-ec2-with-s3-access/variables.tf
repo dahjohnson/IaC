@@ -70,7 +70,7 @@ variable "ec2-trust-policy" {
         }   
     ]
 }
-    EOF  
+EOF  
 }
 
 variable "ec2-s3-permissions" {
