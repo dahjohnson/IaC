@@ -1,4 +1,6 @@
-# VPC Variables
+# Terraform Variables
+
+## VPC Variables
 
 variable "vpc_cidr" {
   description = "VPC cidr block"
@@ -30,7 +32,7 @@ variable "internet_gateway_tag" {
   default     = "Demo-Internet-Gateway" 
 }
 
-# IAM Role Variables
+## IAM Role Variables
 
 variable "ec2_role_name" {
   description = "IAM role name for Jenkins EC2"
@@ -95,7 +97,7 @@ variable "ec2-s3-permissions" {
 EOF
 }
 
-# S3 Variables
+## S3 Variables
 
 variable "bucket_name" {
   description = "S3 bucket name"
@@ -103,7 +105,7 @@ variable "bucket_name" {
   default     = "terraform1demo1s3bucket2023"
 }
 
-# Security Group Variables
+## Security Group Variables
 
 variable "security_group_name" {
   description = "Name for Jenkins Security Group"
@@ -111,13 +113,7 @@ variable "security_group_name" {
   default     = "Jenkins Security Group"
 }
 
-## External Data Source Block to Obtain User's Public IP and add to Security Group
-
-data "external" "myipaddr" {
-  program = ["bash", "-c", "curl -s 'https://ipinfo.io/json'"]
-}
-
-# EC2 Variables
+## EC2 Variables
 
 variable "ami" {
   description = "Jenkins EC2 machine image id"
