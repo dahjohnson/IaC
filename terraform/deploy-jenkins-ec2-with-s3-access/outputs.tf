@@ -9,3 +9,8 @@ output "s3_bucket_uri" {
   description = "S3 bucket URI"
   value       = "s3://${aws_s3_bucket.s3.id}"
 }
+
+output "bucket_domain_name" {
+  description = "FQDN of bucket"
+  value       = "https://${aws_s3_bucket.s3.bucket_domain_name}"
+}

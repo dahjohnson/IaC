@@ -45,28 +45,28 @@ resource "aws_default_route_table" "default_route" {
 ## Create S3 Bucket and Policies
 
 resource "aws_iam_role" "ec2_iam_role" {
-    name = var.ec2_role_name
-    assume_role_policy = var.ec2-trust-policy
+  name               = var.ec2_role_name
+  assume_role_policy = var.ec2-trust-policy
 }
 
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
-    name = var.ec2_instance_profile_name
-    role = aws_iam_role.ec2_iam_role.id
+  name = var.ec2_instance_profile_name
+  role = aws_iam_role.ec2_iam_role.id
 }
 
 resource "aws_iam_role_policy" "ec2_role_policy" {
-    name = var.ec2_role_policy_name
-    role = "${aws_iam_role.ec2_iam_role.id}"
-    policy = var.ec2-s3-permissions
+  name   = var.ec2_role_policy_name
+  role   = aws_iam_role.ec2_iam_role.id
+  policy = var.ec2-s3-permissions
 }
 
 resource "aws_s3_bucket" "s3" {
-    bucket        = var.bucket_name
-    force_destroy = true
+  bucket        = var.bucket_name
+  force_destroy = true
 
-    tags = {
-        Name = var.bucket_name
-    }
+  tags = {
+    Name = var.bucket_name
+  }
 }
 
 ## External Data Source Block to Obtain User's Public IP and add to Security Group
@@ -114,15 +114,15 @@ resource "aws_security_group" "jenkins_security_group" {
 ## Create EC2 Instance
 
 resource "aws_instance" "jenkins_server" {
-    ami                  = var.ami
-    instance_type        = var.instance_type
-    key_name             = var.ssh_key_name
-    subnet_id            = aws_subnet.subnet.id
-    security_groups      = [aws_security_group.jenkins_security_group.id]
-    iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.id
-    user_data            = var.ec2_user_data
+  ami                  = var.ami
+  instance_type        = var.instance_type
+  key_name             = var.ssh_key_name
+  subnet_id            = aws_subnet.subnet.id
+  security_groups      = [aws_security_group.jenkins_security_group.id]
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.id
+  user_data            = var.ec2_user_data
 
-    tags = {
-        Name = var.ec2_tag
-    }
+  tags = {
+    Name = var.ec2_tag
+  }
 }
