@@ -5,31 +5,31 @@
 variable "vpc_cidr" {
   description = "VPC cidr block"
   type        = string
-  default     = "10.0.0.0/16" 
+  default     = "10.0.0.0/16"
 }
 
 variable "vpc_tag" {
   description = "Name tag for VPC"
   type        = string
-  default     = "Demo-VPC" 
+  default     = "Demo-VPC"
 }
 
 variable "subnet_tag" {
   description = "Name tag for Subnet"
   type        = string
-  default     = "Demo-Subnet" 
+  default     = "Demo-Subnet"
 }
 
 variable "subnet_cidr" {
   description = "Subnet cidr block"
   type        = string
-  default     = "10.0.0.0/24" 
+  default     = "10.0.0.0/24"
 }
 
 variable "internet_gateway_tag" {
   description = "Name tag for Internet Gateway"
   type        = string
-  default     = "Demo-Internet-Gateway" 
+  default     = "Demo-Internet-Gateway"
 }
 
 ## IAM Role Variables
@@ -37,7 +37,7 @@ variable "internet_gateway_tag" {
 variable "ec2_role_name" {
   description = "IAM role name for Jenkins EC2"
   type        = string
-  default     = "Jenksins_EC2_Server_IAM_Role" 
+  default     = "Jenksins_EC2_Server_IAM_Role"
 }
 
 variable "ec2_instance_profile_name" {
@@ -118,19 +118,19 @@ variable "security_group_name" {
 variable "ami" {
   description = "Jenkins EC2 machine image id"
   type        = string
-  default     = "ami-0dfcb1ef8550277af" 
+  default     = "ami-0dfcb1ef8550277af"
 }
 
 variable "instance_type" {
   description = "Jenkins EC2 instance type"
   type        = string
-  default     = "t2.micro" 
+  default     = "t2.micro"
 }
 
 variable "ssh_key_name" {
   description = "SSH key name for Jenkins EC2"
   type        = string
-  default     = "ssh_key" 
+  default     = "ssh_key"
 }
 
 variable "ec2_user_data" {
@@ -172,5 +172,5 @@ EOF
 variable "ec2_tag" {
   description = "Name tag for Jenkins EC2"
   type        = string
-  default     = "Jenkins-Server" 
+  default     = "Jenkins-Server"
 }
