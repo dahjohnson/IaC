@@ -1,6 +1,6 @@
 # Deploy an EC2 instance with Jenkins installed using Terraform
 
-
+![deploy-ec2-w-jenkins-terraform](https://user-images.githubusercontent.com/116639830/221373512-694cc740-8432-44f8-8490-70edbb65f3e5.png)
 
 - [Medium Blog Walkthrough](https://medium.com/aws-in-plain-english/deploy-an-ec2-with-jenkins-installed-using-terraform-ac1495c813a2 "<deploy-an-ec2-with-jenkins-installed-using-terraform-ac1495c813a2> Medium Blog Walkthrough")
 
