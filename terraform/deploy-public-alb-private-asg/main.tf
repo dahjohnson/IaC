@@ -154,12 +154,12 @@ resource "aws_security_group" "asg_security_group" {
 ## Launch Template and ASG Resources
 
 resource "aws_launch_template" "launch_template" {
-  name                   = var.launch_template
-  image_id               = var.ami
-  instance_type          = var.instance_type
+  name          = var.launch_template
+  image_id      = var.ami
+  instance_type = var.instance_type
 
   network_interfaces {
-    device_index = 0
+    device_index    = 0
     security_groups = [aws_security_group.asg_security_group.id]
   }
   tag_specifications {
@@ -203,8 +203,8 @@ resource "aws_lb_target_group" "target_group" {
   vpc_id   = aws_vpc.vpc.id
 
   health_check {
-    path     = "/"
-    matcher  = 200
+    path    = "/"
+    matcher = 200
   }
 }
 
