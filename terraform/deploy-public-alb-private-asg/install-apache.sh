@@ -1,1 +1,18 @@
-IyEvYmluL2Jhc2gKCiMgSW5zdGFsbCBBcGFjaGUgb24gVWJ1bnR1CgphcHQgdXBkYXRlCmFwdCBpbnN0YWxsIGFwYWNoZTIKCgpjYXQgPiAvdmFyL3d3dy9nY2kvaW5kZXguaHRtbCA8PCBFT0YKPGh0bWw+CjxoZWFkPgogIDx0aXRsZT4gQXBhY2hlIG9uIFVidW50dSA8L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogIDxwPiBBcGFjaGUgd2FzIGluc3RhbGxlZCB1c2luZyBUZXJyYWZvcm0hCjwvYm9keT4KPC9odG1sPgpFT0Y=
+#!/bin/bash
+
+# Install Apache on Ubuntu
+
+apt update
+apt install apache2
+
+
+cat > /var/www/gci/index.html << EOF
+<html>
+<head>
+  <title> Apache on Ubuntu </title>
+</head>
+<body>
+  <p> Apache was installed using Terraform!
+</body>
+</html>
+EOF
