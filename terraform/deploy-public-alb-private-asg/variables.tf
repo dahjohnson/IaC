@@ -1,5 +1,17 @@
 # Terraform Variables
 
+## Region Variables
+
+variable "aws_region" {
+  description = "AWS region name"
+  type        = string
+  default     = "us-east-1"
+  validation {
+    condition     = can(regex("^us-", var.aws_region))
+    error_message = "The aws_region value must be a valid region in the USA, starting with \"us-\"."
+  }
+}
+
 ## VPC Variables
 
 variable "vpc" {
