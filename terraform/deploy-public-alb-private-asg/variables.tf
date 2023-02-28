@@ -78,7 +78,7 @@ variable "nat_gateway" {
 variable "alb_security_group" {
   description = "ALB Security Group name"
   type        = string
-  default     = "alb-security_-roup"
+  default     = "alb-security_group"
 }
 
 variable "asg_security_group" {
@@ -112,3 +112,18 @@ variable "launch_template_ec2" {
   type        = string
   default     = "demo-asg-ec2"
 }
+
+# ALB Variables
+
+variable "alb" {
+  description = "Application Load Balancer name"
+  type        = string
+  default     = "demo-external-alb"
+}
+
+variable "target_group" {
+  description = "Application Load Balancer Target Group name"
+  type        = string
+  default     = "alb-target-group"
+}
+
