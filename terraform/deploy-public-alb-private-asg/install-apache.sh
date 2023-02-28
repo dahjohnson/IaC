@@ -2,11 +2,11 @@
 
 # Install Apache on Ubuntu
 
-apt update
-apt install apache2
+sudo apt update -y
+sudo apt install -y apache2
 
 
-cat > /var/www/gci/index.html << EOF
+sudo cat > /var/www/html/index.html << EOF
 <html>
 <head>
   <title> Apache on Ubuntu </title>
