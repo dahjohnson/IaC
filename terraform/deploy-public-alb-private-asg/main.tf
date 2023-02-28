@@ -152,11 +152,7 @@ resource "aws_launch_template" "launch_template" {
   name          = var.launch_template
   image_id      = var.ami
   instance_type = var.instance_type
-
-  network_interfaces {
-    subnet_id       = aws_subnet.private_subnet[0].id
-    security_groups = [aws_security_group.asg_security_group.id]
-  }
+  vpc_security_group_ids = [aws_security_group.asg_security_group.id]
 
   tag_specifications {
     resource_type = "instance"
@@ -167,4 +163,26 @@ resource "aws_launch_template" "launch_template" {
   }
 
   user_data = filebase64("${path.module}/install-apache.sh")
+}
+
+resource aws_autoscaling_group "auto_scaling_group" {
+  desired_capacity   = 2
+  max_size           = 5
+  min_size           = 2
+  vpc_zone_identifier = [for i in aws_subnet.private_subnet[*] : i.id]
+
+  launch_template {
+    id      = aws_launch_template.launch_template.id
+    version = aws_launch_template.launch_template.latest_version
+  }
+}
+
+# Application Load Balancer Resources
+
+resource "aws_lb" "alb" {
+  name               = "test-lb-tf"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb_security_group.id]
+  subnets            = [for i in aws_subnet.public_subnet : subnet.id]
 }
