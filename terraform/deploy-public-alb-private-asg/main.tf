@@ -6,7 +6,7 @@ resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
 
   tags = {
-    Name = var.vpc
+    Name = local.vpc_name
   }
 }
 
@@ -14,7 +14,7 @@ resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name = var.internet_gateway
+    Name = local.internet_gateway_name
   }
 }
 
@@ -26,7 +26,7 @@ resource "aws_subnet" "public_subnet" {
   availability_zone       = var.az_names[count.index]
 
   tags = {
-    Name = join("-", [var.public_subnet, var.az_names[count.index]])
+    Name = join("-", [local.public_subnet_name, var.az_names[count.index]])
   }
 }
 
@@ -37,7 +37,7 @@ resource "aws_subnet" "private_subnet" {
   availability_zone = var.az_names[count.index]
 
   tags = {
-    Name = join("-", [var.private_subnet, var.az_names[count.index]])
+    Name = join("-", [local.private_subnet_name, var.az_names[count.index]])
   }
 }
 
@@ -51,13 +51,13 @@ resource "aws_route_table" "public_route_table" {
 
 
   tags = {
-    Name = var.public_route_table
+    Name = local.public_route_table_name
   }
 }
 
 resource "aws_eip" "elastic_ip" {
   tags = {
-    Name = var.elastic_ip
+    Name = local.elastic_ip_name
   }
 }
 
@@ -67,7 +67,7 @@ resource "aws_nat_gateway" "nat_gateway" {
   subnet_id         = aws_subnet.public_subnet[0].id
 
   tags = {
-    Name = var.nat_gateway
+    Name = local.nat_gateway_name
   }
 
   depends_on = [aws_internet_gateway.internet_gateway]
@@ -83,7 +83,7 @@ resource "aws_route_table" "private_route_table" {
 
 
   tags = {
-    Name = var.private_route_table
+    Name = local.private_route_table_name
   }
 }
 
@@ -102,7 +102,7 @@ resource "aws_route_table_association" "private_rt_assoc" {
 ## Security Group Resources
 
 resource "aws_security_group" "alb_security_group" {
-  name        = var.alb_security_group
+  name        = local.alb_security_group_name
   description = "ALB Security Group"
   vpc_id      = aws_vpc.vpc.id
 
@@ -122,12 +122,12 @@ resource "aws_security_group" "alb_security_group" {
   }
 
   tags = {
-    Name = var.alb_security_group
+    Name = local.alb_security_group_name
   }
 }
 
 resource "aws_security_group" "asg_security_group" {
-  name        = var.asg_security_group
+  name        = local.asg_security_group_name
   description = "ASG Security Group"
   vpc_id      = aws_vpc.vpc.id
 
@@ -147,14 +147,14 @@ resource "aws_security_group" "asg_security_group" {
   }
 
   tags = {
-    Name = var.asg_security_group
+    Name = local.asg_security_group_name
   }
 }
 
 ## Launch Template and ASG Resources
 
 resource "aws_launch_template" "launch_template" {
-  name          = var.launch_template
+  name          = local.launch_template_name
   image_id      = var.ami
   instance_type = var.instance_type
 
@@ -166,7 +166,7 @@ resource "aws_launch_template" "launch_template" {
     resource_type = "instance"
 
     tags = {
-      Name = var.launch_template_ec2
+      Name = local.launch_template_ec2_name
     }
   }
 
@@ -189,7 +189,7 @@ resource "aws_autoscaling_group" "auto_scaling_group" {
 # Application Load Balancer Resources
 
 resource "aws_lb" "alb" {
-  name               = var.alb
+  name               = local.alb_name
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_security_group.id]
@@ -197,7 +197,7 @@ resource "aws_lb" "alb" {
 }
 
 resource "aws_lb_target_group" "target_group" {
-  name     = var.target_group
+  name     = local.target_group_name
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.vpc.id
