@@ -1,5 +1,17 @@
 # Terraform Variables
 
+variable "environment" {
+  description = "Environment name for deployment"
+  type        = string
+  default     = "demo"
+}
+
+variable "aws_region" {
+  description = "AWS region resources are deployed to"
+  type        = string
+  default     = "us-east-1"
+}
+
 ## VPC Variables
 
 variable "vpc_cidr" {
@@ -8,49 +20,13 @@ variable "vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "vpc_tag" {
-  description = "Name tag for VPC"
-  type        = string
-  default     = "Demo-VPC"
-}
-
-variable "subnet_tag" {
-  description = "Name tag for Subnet"
-  type        = string
-  default     = "Demo-Subnet"
-}
-
 variable "subnet_cidr" {
   description = "Subnet cidr block"
   type        = string
   default     = "10.0.0.0/24"
 }
 
-variable "internet_gateway_tag" {
-  description = "Name tag for Internet Gateway"
-  type        = string
-  default     = "Demo-Internet-Gateway"
-}
-
 ## IAM Role Variables
-
-variable "ec2_role_name" {
-  description = "IAM role name for Jenkins EC2"
-  type        = string
-  default     = "Jenksins_EC2_Server_IAM_Role"
-}
-
-variable "ec2_instance_profile_name" {
-  description = "IAM instance profile name for Jenkins EC2"
-  type        = string
-  default     = "Jenkins_EC2_Server_Instance_Profile"
-}
-
-variable "ec2_role_policy_name" {
-  description = "IAM role policy name for Jenkins EC2"
-  type        = string
-  default     = "Jenkins_EC2_Role_Policy"
-}
 
 variable "ec2-trust-policy" {
   description = "sts assume role policy for EC2"
@@ -105,14 +81,6 @@ variable "bucket_name" {
   default     = "terraform1demo1s3bucket2023"
 }
 
-## Security Group Variables
-
-variable "security_group_name" {
-  description = "Name for Jenkins Security Group"
-  type        = string
-  default     = "Jenkins Security Group"
-}
-
 ## EC2 Variables
 
 variable "ami" {
@@ -127,12 +95,6 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
-variable "ssh_key_name" {
-  description = "SSH key name for Jenkins EC2"
-  type        = string
-  default     = "ssh_key"
-}
-
 variable "ec2_user_data" {
   description = "User data shell script for Jenkins EC2"
   type        = string
@@ -142,7 +104,7 @@ variable "ec2_user_data" {
 sudo wget -O /etc/yum.repos.d/jenkins.repo \
     https://pkg.jenkins.io/redhat-stable/jenkins.repo
 sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
-sudo yum upgrade
+sudo yum upgrade -y
 # Add required dependencies for the jenkins package
 sudo amazon-linux-extras install -y java-openjdk11 
 sudo yum install -y jenkins
@@ -167,10 +129,4 @@ if [[ $(firewall-cmd --state) = 'running' ]]; then
     firewall-cmd --reload
 fi
 EOF
-}
-
-variable "ec2_tag" {
-  description = "Name tag for Jenkins EC2"
-  type        = string
-  default     = "Jenkins-Server"
 }

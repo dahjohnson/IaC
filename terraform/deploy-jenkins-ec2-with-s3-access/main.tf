@@ -8,7 +8,7 @@ resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
 
   tags = {
-    Name = var.vpc_tag
+    Name = "${var.environment}-vpc"
   }
 }
 
@@ -18,7 +18,7 @@ resource "aws_subnet" "subnet" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = var.subnet_tag
+    Name = "${var.environment}-subnet"
   }
 }
 
@@ -26,7 +26,7 @@ resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name = var.internet_gateway_tag
+    Name = "${var.environment}-internet-gateway"
   }
 }
 
@@ -37,25 +37,22 @@ resource "aws_default_route_table" "default_route" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.internet_gateway.id
   }
-  tags = {
-    Name = var.internet_gateway_tag
-  }
 }
 
 ## Create S3 Bucket and Policies
 
 resource "aws_iam_role" "ec2_iam_role" {
-  name               = var.ec2_role_name
+  name               = "${var.environment}-ec2-iam-role"
   assume_role_policy = var.ec2-trust-policy
 }
 
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
-  name = var.ec2_instance_profile_name
+  name = "${var.environment}-ec2-instance-profile"
   role = aws_iam_role.ec2_iam_role.id
 }
 
 resource "aws_iam_role_policy" "ec2_role_policy" {
-  name   = var.ec2_role_policy_name
+  name   = "${var.environment}-ec2-role-policy"
   role   = aws_iam_role.ec2_iam_role.id
   policy = var.ec2-s3-permissions
 }
@@ -65,7 +62,7 @@ resource "aws_s3_bucket" "s3" {
   force_destroy = true
 
   tags = {
-    Name = var.bucket_name
+    Name = "${var.environment}-s3-bucket"
   }
 }
 
@@ -78,7 +75,7 @@ data "external" "myipaddr" {
 ## Create EC2 Security Group and Security Rules
 
 resource "aws_security_group" "jenkins_security_group" {
-  name        = var.security_group_name
+  name        = "${var.environment}-jenkins-security-group"
   description = "Apply to Jenkins EC2 instance"
   vpc_id      = aws_vpc.vpc.id
 
@@ -107,22 +104,58 @@ resource "aws_security_group" "jenkins_security_group" {
   }
 
   tags = {
-    Name = "Jenkins_Security_Group"
+    Name = "${var.environment}-jenkins-security-group"
   }
 }
 
 ## Create EC2 Instance
 
+# Terraform Data Block - Lookup Ubuntu 20.04
+data "aws_ami" "amazon_linux_2" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm*"]
+  }
+
+  filter {
+    name   = "owner-alias"
+    values = ["amazon"]
+  }
+}
+
+resource "tls_private_key" "generated" {
+  algorithm = "RSA"
+}
+
+resource "local_file" "private_key_pem" {
+  content         = tls_private_key.generated.private_key_pem
+  filename        = "my-ssh-key.pem"
+  file_permission = "0400"
+}
+
+resource "aws_key_pair" "generated" {
+  key_name   = "my-ssh-key"
+  public_key = tls_private_key.generated.public_key_openssh
+}
+
+
 resource "aws_instance" "jenkins_server" {
-  ami                  = var.ami
+  ami                  = data.aws_ami.amazon_linux_2.id
   instance_type        = var.instance_type
-  key_name             = var.ssh_key_name
+  key_name             = aws_key_pair.generated.key_name
   subnet_id            = aws_subnet.subnet.id
   security_groups      = [aws_security_group.jenkins_security_group.id]
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.id
   user_data            = var.ec2_user_data
+  connection {
+    user        = "ec2-user"
+    private_key = tls_private_key.generated.private_key_pem
+    host        = self.public_ip
+  }
 
   tags = {
-    Name = var.ec2_tag
+    Name = "${var.environment}-jenkins-server"
   }
 }
