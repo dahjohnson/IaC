@@ -26,7 +26,6 @@ variable "subnet_cidr" {
   default     = "10.0.0.0/24"
 }
 
-
 ## IAM Role Variables
 
 variable "ec2-trust-policy" {
@@ -96,12 +95,6 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
-variable "ssh_key_name" {
-  description = "SSH key name for Jenkins EC2"
-  type        = string
-  default     = "ssh_key"
-}
-
 variable "ec2_user_data" {
   description = "User data shell script for Jenkins EC2"
   type        = string
@@ -111,7 +104,7 @@ variable "ec2_user_data" {
 sudo wget -O /etc/yum.repos.d/jenkins.repo \
     https://pkg.jenkins.io/redhat-stable/jenkins.repo
 sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
-sudo yum upgrade
+sudo yum upgrade -y
 # Add required dependencies for the jenkins package
 sudo amazon-linux-extras install -y java-openjdk11 
 sudo yum install -y jenkins

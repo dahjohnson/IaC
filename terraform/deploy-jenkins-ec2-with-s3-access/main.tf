@@ -116,25 +116,44 @@ data "aws_ami" "amazon_linux_2" {
 
   filter {
     name   = "name"
-    values = ["Amazon Linux 2*"]
+    values = ["amzn2-ami-hvm*"]
   }
 
   filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
+    name   = "owner-alias"
+    values = ["amazon"]
   }
-
-  # owners = ["amazon"]
 }
+
+resource "tls_private_key" "generated" {
+  algorithm = "RSA"
+}
+
+resource "local_file" "private_key_pem" {
+  content         = tls_private_key.generated.private_key_pem
+  filename        = "my-ssh-key.pem"
+  file_permission = "0400"
+}
+
+resource "aws_key_pair" "generated" {
+  key_name   = "my-ssh-key"
+  public_key = tls_private_key.generated.public_key_openssh
+}
+
 
 resource "aws_instance" "jenkins_server" {
   ami                  = data.aws_ami.amazon_linux_2.id
   instance_type        = var.instance_type
-  key_name             = var.ssh_key_name
+  key_name             = aws_key_pair.generated.key_name
   subnet_id            = aws_subnet.subnet.id
   security_groups      = [aws_security_group.jenkins_security_group.id]
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.id
   user_data            = var.ec2_user_data
+  connection {
+    user        = "ec2-user"
+    private_key = tls_private_key.generated.private_key_pem
+    host        = self.public_ip
+  }
 
   tags = {
     Name = "${var.environment}-jenkins-server"
