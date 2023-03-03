@@ -12,7 +12,7 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-## VPC Variables
+# VPC Variables
 
 variable "vpc_cidr" {
   description = "VPC cidr block"
@@ -26,7 +26,7 @@ variable "subnet_cidr" {
   default     = "10.0.0.0/24"
 }
 
-## IAM Role Variables
+# IAM Role Variables
 
 variable "ec2-trust-policy" {
   description = "sts assume role policy for EC2"
@@ -73,7 +73,7 @@ variable "ec2-s3-permissions" {
 EOF
 }
 
-## S3 Variables
+# S3 Variables
 
 variable "bucket_name" {
   description = "S3 bucket name"
@@ -81,12 +81,12 @@ variable "bucket_name" {
   default     = "terraform1demo1s3bucket2023"
 }
 
-## EC2 Variables
+# EC2 Variables
 
-variable "ami" {
-  description = "Jenkins EC2 machine image id"
+variable "ssh_key" {
+  description = "ssh key name"
   type        = string
-  default     = "ami-0dfcb1ef8550277af"
+  default     = "my-ssh-key"
 }
 
 variable "instance_type" {
