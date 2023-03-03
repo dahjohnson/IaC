@@ -190,7 +190,6 @@ resource "aws_launch_template" "launch_template" {
     }
   }
   user_data = base64encode("${var.ec2_user_data}")
-  #  user_data  = filebase64("${path.module}/install-apache.sh")
 }
 
 resource "aws_autoscaling_group" "auto_scaling_group" {
