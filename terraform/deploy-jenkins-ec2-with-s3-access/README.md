@@ -47,4 +47,4 @@
 `terraform output`
 
 ### Tear down infrastructure deployed by Terraform
-`terraform destory`
+`terraform destroy`
