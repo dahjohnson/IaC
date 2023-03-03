@@ -1,8 +1,8 @@
-# This Terraform deployment creates the following resources:
-#   VPC, Subnet, Internet Gateway, Default Route, IAM instance profile with S3 access,
-#   Security Group, and EC2 with userdata script installing Jenkins
+/* This Terraform deployment creates the following resources:
+   VPC, Subnet, Internet Gateway, Default Route, IAM instance profile with S3 access,
+   Security Group, SSH Key, and EC2 with userdata script installing Jenkins */
 
-## Create VPC Resources
+# Create VPC Resources
 
 resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
@@ -39,7 +39,7 @@ resource "aws_default_route_table" "default_route" {
   }
 }
 
-## Create S3 Bucket and Policies
+# Create S3 Bucket and IAM Policies
 
 resource "aws_iam_role" "ec2_iam_role" {
   name               = "${var.environment}-ec2-iam-role"
@@ -66,13 +66,13 @@ resource "aws_s3_bucket" "s3" {
   }
 }
 
-## External Data Source Block to Obtain User's Public IP and add to Security Group
+# Obtain User's Local Public IP
 
 data "external" "myipaddr" {
   program = ["bash", "-c", "curl -s 'https://ipinfo.io/json'"]
 }
 
-## Create EC2 Security Group and Security Rules
+# Create EC2 Security Group and Security Rules
 
 resource "aws_security_group" "jenkins_security_group" {
   name        = "${var.environment}-jenkins-security-group"
@@ -108,9 +108,8 @@ resource "aws_security_group" "jenkins_security_group" {
   }
 }
 
-## Create EC2 Instance
 
-# Terraform Data Block - Lookup Ubuntu 20.04
+# Lookup Amazon Linux Image
 data "aws_ami" "amazon_linux_2" {
   most_recent = true
 
@@ -125,22 +124,23 @@ data "aws_ami" "amazon_linux_2" {
   }
 }
 
+# Create SSH Keys for EC2 Remote Access
 resource "tls_private_key" "generated" {
   algorithm = "RSA"
 }
 
 resource "local_file" "private_key_pem" {
   content         = tls_private_key.generated.private_key_pem
-  filename        = "my-ssh-key.pem"
+  filename        = "${var.ssh_key}.pem"
   file_permission = "0400"
 }
 
 resource "aws_key_pair" "generated" {
-  key_name   = "my-ssh-key"
+  key_name   = var.ssh_key
   public_key = tls_private_key.generated.public_key_openssh
 }
 
-
+# Create EC2 Instance
 resource "aws_instance" "jenkins_server" {
   ami                  = data.aws_ami.amazon_linux_2.id
   instance_type        = var.instance_type
