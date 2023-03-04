@@ -1,6 +1,6 @@
 # Terraform: Deploying an External Load Balancer with a Private Auto-Scaling Group
 
-
+![luit-week21-terraform-project](https://user-images.githubusercontent.com/116639830/222899916-7f79e46f-c32f-448a-942a-63265cb82387.png)
 
 - [Medium Blog Walkthrough](https://medium.com/towards-aws/terraform-deploying-an-external-load-balancer-with-a-private-auto-scaling-group-ef709990d5a7 "<terraform-deploying-an-external-load-balancer-with-a-private-auto-scaling-group-ef709990d5a7> Medium Blog Walkthrough")
 
