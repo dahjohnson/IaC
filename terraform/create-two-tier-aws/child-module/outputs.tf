@@ -20,7 +20,7 @@ output "db_address" {
 
 output "connect_to_database" {
   description = "Command to connect to database from EC2"
-  value       = "mysql --hostname=${aws_db_instance.db_instance.address} --user=${var.db_username} -p"
+  value       = "mysql --host=${aws_db_instance.db_instance.address} --user=${var.db_username} -p"
 }
 
 output "alb_public_url" {
