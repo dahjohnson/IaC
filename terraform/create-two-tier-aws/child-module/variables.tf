@@ -29,7 +29,7 @@ variable "private_subnet_cidr_block" {
 
 variable "ec2_name" {
   description = "EC2 Web Server name"
-  type = string
+  type        = string
 }
 
 variable "ssh_key" {
@@ -47,6 +47,7 @@ variable "user_data" {
 
 sudo apt update -y
 sudo apt install -y apache2
+sudo apt install -y mysql-client
 
 sudo systemctl start apache2
 sudo systemctl enable apache2
@@ -88,7 +89,6 @@ variable "db_instance_class" {
 variable "db_username" {
   description = "The master username for the database"
   type        = string
-  sensitive   = true
 }
 
 variable "db_password" {
