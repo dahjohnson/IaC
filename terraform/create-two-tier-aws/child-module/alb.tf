@@ -28,7 +28,6 @@ resource "aws_security_group" "alb_security_group" {
   }
 }
 
-
 ################################################################################
 # Application Load Balancer
 ################################################################################
@@ -55,11 +54,6 @@ resource "aws_lb_target_group" "target_group" {
   health_check {
     path    = "/"
     matcher = 200
-
-    tags = {
-      Name        = "${var.env}-target-group"
-      Environment = var.env
-    }
   }
 }
 
