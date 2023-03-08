@@ -1,3 +1,7 @@
+################################################################################
+# Outputs
+################################################################################
+
 output "web_server_public_ip" {
   description = "Public IP of Web Servers"
   value       = module.create_two_tier_aws.web_server_public_ip

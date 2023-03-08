@@ -23,7 +23,8 @@ resource "aws_security_group" "alb_security_group" {
   }
 
   tags = {
-    Name = "${var.env}-alb-security-group"
+    Name        = "${var.env}-alb-security-group"
+    Environment = var.env
   }
 }
 
@@ -38,6 +39,11 @@ resource "aws_lb" "alb" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_security_group.id]
   subnets            = [for i in aws_subnet.public_subnet : i.id]
+
+  tags = {
+    Name        = "${var.env}-alb"
+    Environment = var.env
+  }
 }
 
 resource "aws_lb_target_group" "target_group" {
@@ -49,6 +55,11 @@ resource "aws_lb_target_group" "target_group" {
   health_check {
     path    = "/"
     matcher = 200
+
+    tags = {
+      Name        = "${var.env}-target-group"
+      Environment = var.env
+    }
   }
 }
 
@@ -71,6 +82,7 @@ resource "aws_lb_listener" "alb_listener" {
   }
 
   tags = {
-    Name = "${var.env}-alb-listenter"
+    Name        = "${var.env}-alb-listenter"
+    Environment = var.env
   }
 }
